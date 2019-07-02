@@ -1,0 +1,30 @@
+* Roll your own vdom with lenses
+
+In a world of javascript fatigue, almost every developer
+yearns to build one more framework.
+
+But our framework is better! It uses lenses! Kinda.
+
+- Implement your own component library that uses your own virtual dom
+- Virtual dom implementation should take advantage of lenses
+- For our purposes, lenses should have 2 functions of the form
+
+~(set) s: Lens -> VDom -> VDom -> VDom~
+
+~(view) v: Lens -> VDom -> VDom~
+
+With your /usual/ axioms:
+
+~s(L, s(L, D, X), Y) = Y~
+
+~v(L, s(L, D, X)) = X~
+
+~s(L, v(L, D), X) = D~
+
+Note that VDom type repeats since a view over VDom is a VDom. Feel
+free to differentiate between the types if it makes things easier.
+
+Feel free to implement component however you like.
+
+Test your microframework by implementing a simple list that takes
+advantage of virtual dom updates.

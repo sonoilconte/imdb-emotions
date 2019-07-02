@@ -1,0 +1,14 @@
+* Data processing pipeline
+
+Pick two APIs from https://rapidapi.com/, one that produces text
+content and the other one that consumes it. One example is, Reddit API
+and Yoda Translator API.
+
+Design the following:
+
+- Another API that is a composition of the ones you've chosen
+
+- As a bonus, simulate (if needed) different rate limits
+  on the APIs you've chosen and design an efficient pipeline
+  that continuously processes the data via composition of the
+  two APIs.

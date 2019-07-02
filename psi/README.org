@@ -1,0 +1,28 @@
+* Designing MVP processing pipeline
+
+Using https://www.terraform.io, define an minimum viable architecture
+for the following scenario. Feel free to include a high level writeup.
+
+A user uploads a list of records in a .csv format to AWS S3 storage
+at a rate of 10 files per hour. Each file might contain up to a 1000
+rows and 50 columns.
+
+A worker should pick up uploaded record and extract some fields,
+using an Extraction API, reducing the number of columns to 25. This
+API takes ~150ms to process a file, not counting
+the network latency.
+
+Once the fields are extracted, a copy of records is put in a storage
+for archiving purposes.
+
+The same records are then piped through a Machine Learning API that
+returns a JSON containing 20 numeric values evaluated. Machine Learning
+API was implemented by an Excel guru, so it can take a 2-10 minutes
+to produce an output and has will produce an error with 0.2 probability
+and drop a network request.
+
+This JSON is further processed and inserted into a transaction
+database, optimized for reads.
+
+A user can see processed data via a browser that talks to the API
+that talks to the transaction database.
