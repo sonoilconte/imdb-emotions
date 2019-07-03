@@ -1,4 +1,5 @@
 const axios = require('axios');
+const handleError = require('./handleError');
 const SEARCH_URL = "https://movie-database-imdb-alternative.p.rapidapi.com/?page=1&r=json";
 const axiosOptions = {
   method: 'get',
@@ -11,25 +12,26 @@ const axiosOptions = {
 
 function searchImdb(req, searchResponse) {
   console.log('searching IMDB with query', req.query);
-  axiosOptions.url = `${SEARCH_URL}&s=${req.query.name}`;
+  if (!req.query.title) {
+    handleError(422, 'Please include a title query parameter', searchResponse);
+    return;
+  }
+  axiosOptions.url = `${SEARCH_URL}&s=${req.query.title}`;
   axios(axiosOptions)
   .then(res => {
     if (res.data && res.data.Search && res.data.Search.length) {
-      console.log({ data: res.data.Search });
+      console.log({ data: res.data });
       searchResponse.json({
         status: 200,
         data: res.data.Search
       });
     } else {
-      const status = 404;
-      searchResponse.status(status).json({
-        status,
-        message: `Film with name ${req.query.name} could not be found`
-      });
+      handleError(404, `Film with title ${req.query.title} could not be found`, searchResponse);
     }
   })
   .catch(err => {
     console.log({ err });
+    handleError(500, 'Something went wrong. Please try again later', searchResponse);
   });
 }
 
