@@ -1,4 +1,4 @@
-function handleError(status, message, res) {
+function sendError(status, message, res) {
   console.log('error', { status, message });
   res.status(status).json({
     status,
@@ -6,4 +6,4 @@ function handleError(status, message, res) {
   });
 }
 
-module.exports = handleError;
+module.exports = sendError;
