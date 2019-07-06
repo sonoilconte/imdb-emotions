@@ -5,19 +5,19 @@ const SEARCH_URL = "https://movie-database-imdb-alternative.p.rapidapi.com/?page
 const imdbOptions = {
   method: 'get',
   headers: {
-    'X-RapidAPI-Host': 'movie-database-imdb-alternative.p.rapidapi.com',
-    'X-RapidAPI-Key': '44a1754a56msh7e591ca0b5f6bf8p177e0ejsne4c363ff2286',
+    'X-RapidAPI-Host': process.env.IMDB_HOST,
+    'X-RapidAPI-Key': process.env.RAPID_API_KEY,
   }
 };
 
 const emotionsOptions = {
   method: 'post',
   headers: {
-    'X-RapidAPI-Host': 'twinword-emotion-analysis-v1.p.rapidapi.com',
-    'X-RapidAPI-Key': '44a1754a56msh7e591ca0b5f6bf8p177e0ejsne4c363ff2286'
+    'X-RapidAPI-Host': process.env.EMOTIONS_HOST,
+    'X-RapidAPI-Key': process.env.RAPID_API_KEY,
   },
-  url: 'https://twinword-emotion-analysis-v1.p.rapidapi.com/analyze/'
-}
+  url: `https://${process.env.EMOTIONS_HOST}/analyze/`
+};
 
 class apiError extends Error {
   constructor(code, message) {

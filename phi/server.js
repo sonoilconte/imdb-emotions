@@ -1,5 +1,7 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+dotenv.config();
 const searchImdb = require('./controllers/search');
 
 app.get('/', (req, res) => {
