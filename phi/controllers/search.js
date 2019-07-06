@@ -1,6 +1,7 @@
 const axios = require('axios');
 const sendError = require('./sendError');
 const SEARCH_URL = "https://movie-database-imdb-alternative.p.rapidapi.com/?page=1&r=json";
+
 const imdbOptions = {
   method: 'get',
   headers: {
@@ -8,6 +9,15 @@ const imdbOptions = {
     'X-RapidAPI-Key': '44a1754a56msh7e591ca0b5f6bf8p177e0ejsne4c363ff2286',
   }
 };
+
+const emotionsOptions = {
+  method: 'post',
+  headers: {
+    'X-RapidAPI-Host': 'twinword-emotion-analysis-v1.p.rapidapi.com',
+    'X-RapidAPI-Key': '44a1754a56msh7e591ca0b5f6bf8p177e0ejsne4c363ff2286'
+  },
+  url: 'https://twinword-emotion-analysis-v1.p.rapidapi.com/analyze/'
+}
 
 class apiError extends Error {
   constructor(code, message) {
@@ -17,19 +27,20 @@ class apiError extends Error {
   }
 }
 
-
 function searchImdb(req, searchResponse) {
   console.log('searching IMDB with query', req.query);
   if (!req.query.title) {
     sendError(422, 'Please include a title query parameter', searchResponse);
     return;
   }
+  const emotionsSummary = {};
   imdbOptions.url = `${SEARCH_URL}&s=${req.query.title}`;
   axios(imdbOptions)
   .then(res => {
     if (res.data && res.data.Search && res.data.Search.length) {
       console.log({ data: res.data });
       const firstResultId = res.data.Search[0].imdbID;
+      emotionsSummary.imdbID = firstResultId;
       console.log({ firstResultId });
       imdbOptions.url = `${SEARCH_URL}&i=${firstResultId}&plot=full`;
       return axios(imdbOptions);
@@ -40,10 +51,27 @@ function searchImdb(req, searchResponse) {
   })
   .then(res => {
     console.log('get by ID res', res.data);
-    searchResponse.json({
-      status: 200,
-      data: res.data
-    });
+    if (res.data && res.data.Plot) {
+      emotionsSummary.plotAnalyzed = res.data.Plot;
+      emotionsSummary.title = res.data.Title ? res.data.Title : 'unknown';
+      emotionsSummary.year = res.data.Year ? res.data.Year : 'unknown';
+      emotionsOptions.data = `text=${res.data.Plot}`;
+      return axios(emotionsOptions);
+    } else {
+      throw new apiError(200, `Error finding film plot for film ${emotionsSummary.title}`);
+    }
+  })
+  .then(res => {
+    console.log( { res } );
+    if (res.data && res.data.emotion_scores) {
+      emotionsSummary.emotionScores = res.data.emotion_scores;
+      searchResponse.json({
+        status: 200,
+        data: emotionsSummary
+      });
+    } else {
+      throw new apiError(200, `Error finding emotion scores for film ${emotionsSummary.title}`);
+    }
   })
   .catch(err => {
     console.log({ err });
