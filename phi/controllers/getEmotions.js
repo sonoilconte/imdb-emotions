@@ -9,13 +9,15 @@ const limiter = new Bottleneck({
 });
 
 // Options for HTTP requests to vendor APIs
-const imdbOptions = {
+const imdbSearchOptions = {
   method: 'get',
   headers: {
     'X-RapidAPI-Host': process.env.IMDB_HOST,
     'X-RapidAPI-Key': process.env.RAPID_API_KEY,
   },
 };
+
+const imdbByIdOptions = { ...imdbSearchOptions };
 
 const emotionsOptions = {
   method: 'post',
@@ -50,8 +52,8 @@ function getEmotions(req, emotionsResponse) {
       // Verifying that rate limiting of outgoing requests is occurring
       console.log('Outgoing request at', new Date().getTime());
       // Make request to IMDB API with film title query for details on matching film(s)
-      imdbOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&s=${req.query.title}`;
-      return axios(imdbOptions);
+      imdbSearchOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&s=${req.query.title}`;
+      return axios(imdbSearchOptions);
     })
     .then((res) => {
       if (res.data && res.data.Search && res.data.Search.length) {
@@ -59,8 +61,8 @@ function getEmotions(req, emotionsResponse) {
         emotionsSummary.imdbID = firstResultId;
         // With film ID in the response from first call, make request to the second
         // endpoint, which will provide more film details, like the plot
-        imdbOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&i=${firstResultId}&plot=full`;
-        return axios(imdbOptions);
+        imdbByIdOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&i=${firstResultId}&plot=full`;
+        return axios(imdbByIdOptions);
       }
       throw new ApiError(200, `Film with title ${req.query.title} could not be found`);
     })
@@ -88,7 +90,7 @@ function getEmotions(req, emotionsResponse) {
       }
     })
     .catch((err) => {
-      console.log({ err });
+      console.error({ err });
       if (err.code && err.message) {
         sendError(err.code, err.message, emotionsResponse);
       } else {
