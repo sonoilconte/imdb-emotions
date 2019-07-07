@@ -1,8 +1,8 @@
 const axios = require('axios');
+const Bottleneck = require('bottleneck');
 const sendError = require('./sendError');
 
 // Rate-limiting configuration for outgoing requests to first vendor API
-const Bottleneck = require('bottleneck');
 const limiter = new Bottleneck({
   minTime: 1000,
   maxConcurrent: 1,
