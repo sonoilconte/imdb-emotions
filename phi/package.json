@@ -4,6 +4,7 @@
   "description": "* Data processing pipeline",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "mocha ./tests/apiTests.js"
   },
   "author": "Sepp Hammer",
