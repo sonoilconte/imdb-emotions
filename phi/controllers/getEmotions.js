@@ -1,6 +1,11 @@
 const axios = require('axios');
 const sendError = require('./sendError');
-
+// Rate-limiting configuration for outgoing requests to first vendor API
+const Bottleneck = require('bottleneck');
+const limiter = new Bottleneck({
+  minTime: 5000,
+  maxConcurrent: 1,
+});
 const SEARCH_URL = 'https://movie-database-imdb-alternative.p.rapidapi.com/?page=1&r=json';
 // Options for HTTP requests to vendor APIs
 const imdbOptions = {
@@ -36,7 +41,11 @@ function getEmotions(req, emotionsResponse) {
   }
   const emotionsSummary = {};
   imdbOptions.url = `${SEARCH_URL}&s=${req.query.title}`;
-  axios(imdbOptions)
+  limiter
+    .schedule(() => {
+      console.log('Outgoing request at', new Date().getTime());
+      return axios(imdbOptions);
+    })
     .then((res) => {
       if (res.data && res.data.Search && res.data.Search.length) {
         console.log({ data: res.data });
@@ -58,7 +67,7 @@ function getEmotions(req, emotionsResponse) {
         emotionsOptions.data = `text=${res.data.Plot}`;
         return axios(emotionsOptions);
       }
-      throw new ApiError(200, `Error finding film plot for film ${emotionsSummary.title}`);
+      throw new ApiError(204, `Error finding film plot for film ${emotionsSummary.title}`);
     })
     .then((res) => {
       console.log({ res });
@@ -69,7 +78,7 @@ function getEmotions(req, emotionsResponse) {
           data: emotionsSummary,
         });
       } else {
-        throw new ApiError(200, `Error finding emotion scores for film ${emotionsSummary.title}`);
+        throw new ApiError(204, `Error finding emotion scores for film ${emotionsSummary.title}`);
       }
     })
     .catch((err) => {
