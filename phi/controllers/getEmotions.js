@@ -47,7 +47,7 @@ function getEmotions(req, emotionsResponse) {
         return axios(imdbOptions);
       }
       console.log({ res });
-      throw new ApiError(200, `Film with title ${req.query.title} could not be found`);
+      throw new ApiError(204, `Film with title ${req.query.title} could not be found`);
     })
     .then((res) => {
       console.log('get by ID res', res.data);
