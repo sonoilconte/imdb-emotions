@@ -1,12 +1,13 @@
 const axios = require('axios');
 const sendError = require('./sendError');
+
 // Rate-limiting configuration for outgoing requests to first vendor API
 const Bottleneck = require('bottleneck');
 const limiter = new Bottleneck({
-  minTime: 5000,
+  minTime: 1000,
   maxConcurrent: 1,
 });
-const SEARCH_URL = 'https://movie-database-imdb-alternative.p.rapidapi.com/?page=1&r=json';
+
 // Options for HTTP requests to vendor APIs
 const imdbOptions = {
   method: 'get',
@@ -34,43 +35,42 @@ class ApiError extends Error {
 }
 
 function getEmotions(req, emotionsResponse) {
-  console.log('searching IMDB with query', req.query);
   if (!req.query.title) {
     sendError(422, 'Please include a title query parameter', emotionsResponse);
     return;
   }
   const emotionsSummary = {};
-  imdbOptions.url = `${SEARCH_URL}&s=${req.query.title}`;
   limiter
     .schedule(() => {
       console.log('Outgoing request at', new Date().getTime());
+      // Make request to IMDB API with film title query for details on matching film(s)
+      imdbOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&s=${req.query.title}`;
       return axios(imdbOptions);
     })
     .then((res) => {
       if (res.data && res.data.Search && res.data.Search.length) {
-        console.log({ data: res.data });
         const firstResultId = res.data.Search[0].imdbID;
         emotionsSummary.imdbID = firstResultId;
-        console.log({ firstResultId });
-        imdbOptions.url = `${SEARCH_URL}&i=${firstResultId}&plot=full`;
+        // With film ID in the response from first call, make request to the second
+        // endpoint, which will provide more film details, like the plot
+        imdbOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&i=${firstResultId}&plot=full`;
         return axios(imdbOptions);
       }
-      console.log({ res });
       throw new ApiError(204, `Film with title ${req.query.title} could not be found`);
     })
     .then((res) => {
-      console.log('get by ID res', res.data);
       if (res.data && res.data.Plot) {
         emotionsSummary.plotAnalyzed = res.data.Plot;
         emotionsSummary.title = res.data.Title ? res.data.Title : 'unknown';
         emotionsSummary.year = res.data.Year ? res.data.Year : 'unknown';
+        // With plot from response of 2nd call, make request to the third endpoint,
+        // which will provide an emotions analysis of the film plot
         emotionsOptions.data = `text=${res.data.Plot}`;
         return axios(emotionsOptions);
       }
       throw new ApiError(204, `Error finding film plot for film ${emotionsSummary.title}`);
     })
     .then((res) => {
-      console.log({ res });
       if (res.data && res.data.emotion_scores) {
         emotionsSummary.emotionScores = res.data.emotion_scores;
         emotionsResponse.json({

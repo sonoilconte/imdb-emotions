@@ -1,5 +1,3 @@
-console.log('test file');
-
 const app = require('../server.js');
 const supertest = require('supertest')(app);
 
