@@ -22,4 +22,6 @@ I have provided a solution that stiches together two APIs-
 The bottleneck library is used to limit the rate of outgoing requests to the vendor APIs.
 
 To run API tests, make sure Mocha is installed, and run
-`npm test`
+#+BEGIN_SRC shell
+npm test
+#+END_SRC 
