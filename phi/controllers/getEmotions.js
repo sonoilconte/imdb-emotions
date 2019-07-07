@@ -74,7 +74,11 @@ function getEmotions(req, emotionsResponse) {
     })
     .catch((err) => {
       console.log({ err });
-      sendError(err.code, err.message, emotionsResponse);
+      if (err.code && err.message) {
+        sendError(err.code, err.message, emotionsResponse);
+      } else {
+        sendError(500, 'Something went wrong. Please try again.', emotionsResponse);
+      }
     });
 }
 

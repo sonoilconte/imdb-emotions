@@ -15,3 +15,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Express server is running on port ${PORT}`);
 });
+
+// Export here such that ./tests/apiTests.js can access server 
+module.exports = app;
