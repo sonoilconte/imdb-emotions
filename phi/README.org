@@ -69,4 +69,4 @@ overwhelming the rate limits of the vendor APIs.
 
 In ~getEmotions.js~ additional bottleneck limiters could be placed in the promise chain in order
 to fine-tune the outgoing request rates according to the particular contraints of the vendor APIs, in order
-to reducy the overall response time.
+to reduce the overall response time.

@@ -11,11 +11,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 const getEmotions = require('./controllers/getEmotions');
 
-// This endpoint may be used in the future for serving static files
-app.get('/', (req, res) => {
-  res.json({ status: 200 });
-});
-
 app.get('/films', getEmotions);
 
 const PORT = process.env.PORT || 3000;
