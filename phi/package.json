@@ -19,5 +19,8 @@
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.0",
     "supertest": "^4.0.2"
+  },
+  "engines": {
+    "node": "8.9.3"
   }
 }
