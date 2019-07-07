@@ -13,11 +13,11 @@ Design the following:
   that continuously processes the data via composition of the
   two APIs.
 
-## Solution
+** Solution
 
 I have provided a solution that stiches together two APIs-
-1. [Movie Database (IMDB Alternative)](https://rapidapi.com/imdb/api/movie-database-imdb-alternative)
-2. [Emotion Analysis](https://rapidapi.com/twinword/api/emotion-analysis)
+1. [[https://rapidapi.com/imdb/api/movie-database-imdb-alternative][Movie Database (IMDB Alternative)]]
+2. [[https://rapidapi.com/twinword/api/emotion-analysis][Emotion Analysis]]
 
 The bottleneck library is used to limit the rate of outgoing requests to the vendor APIs.
 
