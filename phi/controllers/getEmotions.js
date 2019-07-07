@@ -39,9 +39,15 @@ function getEmotions(req, emotionsResponse) {
     sendError(422, 'Please include a title query parameter', emotionsResponse);
     return;
   }
+  // Check that only allow query parameters are present
+  if (Object.keys(req.query).length !== 1) {
+    sendError(422, 'Please only include title query parameter. Ensure reserved characters like "&" are percent encoded', emotionsResponse);
+    return;
+  }
   const emotionsSummary = {};
   limiter
     .schedule(() => {
+      // Verifying that rate limiting of outgoing requests is occurring
       console.log('Outgoing request at', new Date().getTime());
       // Make request to IMDB API with film title query for details on matching film(s)
       imdbOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&s=${req.query.title}`;
@@ -56,7 +62,7 @@ function getEmotions(req, emotionsResponse) {
         imdbOptions.url = `https://${process.env.IMDB_HOST}?page=1&r=json&i=${firstResultId}&plot=full`;
         return axios(imdbOptions);
       }
-      throw new ApiError(204, `Film with title ${req.query.title} could not be found`);
+      throw new ApiError(200, `Film with title ${req.query.title} could not be found`);
     })
     .then((res) => {
       if (res.data && res.data.Plot) {
@@ -68,7 +74,7 @@ function getEmotions(req, emotionsResponse) {
         emotionsOptions.data = `text=${res.data.Plot}`;
         return axios(emotionsOptions);
       }
-      throw new ApiError(204, `Error finding film plot for film ${emotionsSummary.title}`);
+      throw new ApiError(200, `Error finding film plot for film ${emotionsSummary.title}`);
     })
     .then((res) => {
       if (res.data && res.data.emotion_scores) {
@@ -78,7 +84,7 @@ function getEmotions(req, emotionsResponse) {
           data: emotionsSummary,
         });
       } else {
-        throw new ApiError(204, `Error finding emotion scores for film ${emotionsSummary.title}`);
+        throw new ApiError(200, `Error finding emotion scores for film ${emotionsSummary.title}`);
       }
     })
     .catch((err) => {

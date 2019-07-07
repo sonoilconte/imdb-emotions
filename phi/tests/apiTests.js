@@ -19,11 +19,16 @@ describe('Tests for endpoint /films?title={title}', function() {
       .end(done);
   });
 
-  it('Will respond with status 204 if film cannot be found, /films?title=Gremlinz', function(done) {
+  it('Will respond with status 200 and message if film cannot be found, /films?title=Gremlinz', function(done) {
     this.timeout(10000);
     supertest
       .get('/films?title=Gremlinz')
-      .expect(204)
+      .expect(200)
+      .expect((res) => {
+        if (!(res.body.message === 'Film with title Gremlinz could not be found')) {
+          throw new Error(`unexpected message "${res.body.message}" in response`);
+        }
+      })
       .end(done);
   });
 
