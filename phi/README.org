@@ -19,9 +19,19 @@ I have provided a solution that stiches together two APIs-
 1. [[https://rapidapi.com/imdb/api/movie-database-imdb-alternative][Movie Database (IMDB Alternative)]]
 2. [[https://rapidapi.com/twinword/api/emotion-analysis][Emotion Analysis]]
 
-The bottleneck library is used to limit the rate of outgoing requests to the vendor APIs.
+To run locally, clone this repository, and run ~npm install~. Test the API by making a ~GET~ request to
+~http://localhost:3000/films?title={title}~, for example, ~http://localhost:3000/films?title=gremlins~.
 
-To run API tests, make sure Mocha is installed, and run
-#+BEGIN_SRC shell
-npm test
-#+END_SRC 
+A response to a valid request will provide basic information on the movie, including its plot, and an
+emotions analysis of the plot.
+
+The API will not work right away because I have my Rapid API hosts and key stored in a ~.env~ file that is not under
+source control. Therefore you would need to supply this information by visting the above Rapid API
+links for the URLs and (your own) key.
+
+Instead, you can test the version I have deployed at https://imdb-emotions.herokuapp.com/films?title=Gremlins
+
+If you are running the app locally and would like to run the API tests, make sure Mocha is installed,
+and run ~npm test~. 
+
+The bottleneck library is used to limit the rate of outgoing requests to the vendor APIs.
