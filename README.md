@@ -2,7 +2,7 @@
 
 ## Problem
 
-Pick two APIs from https://rapidapi.com/, one that produces text
+Pick two APIs from https://rapidapi.com/ — one that produces text
 content and the other one that consumes it. One example is, Reddit API
 and Yoda Translator API.
 
@@ -15,12 +15,11 @@ Design the following:
   that continuously processes the data via composition of the
   two APIs.
 
-
 ## Solution
 
 I have provided a solution that stiches together two APIs-
-1. [https://rapidapi.com/imdb/api/movie-database-imdb-alternative](Movie Database API)
-2. [https://rapidapi.com/twinword/api/emotion-analysis](Emotion Analysis API)
+1. [Movie Database API](https://rapidapi.com/imdb/api/movie-database-imdb-alternative)
+2. [Emotion Analysis API](https://rapidapi.com/twinword/api/emotion-analysis)
 
 To run locally, clone this repository, and run `npm install`, then `node server.js` to start the server.
 
@@ -29,7 +28,8 @@ http://localhost:3000/films?title={title}, for example, http://localhost:3000/fi
 
 A response to a valid request will provide basic information on the movie, including its plot, and an
 emotions analysis of the plot. For example,
-#+BEGIN_EXAMPLE
+
+```
 {
   status: 200,
   data: {
@@ -47,7 +47,7 @@ emotions analysis of the plot. For example,
     }
   }
 }
-#+END_EXAMPLE
+```
 
 
 To run the app locally yourself, create a .env file where you specify `EMOTIONS_HOST`, `IMDB_HOST`, `RAPID_API_KEY`. Visit Rapid API for docs on the APIs and your key. 
