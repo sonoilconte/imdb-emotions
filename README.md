@@ -2,7 +2,7 @@
 
 ## Problem
 
-Pick two APIs from https://rapidapi.com/ — one that produces text
+Pick two APIs from [RapidAPI](https://rapidapi.com/) — one that produces text
 content and the other one that consumes it. One example is, Reddit API
 and Yoda Translator API.
 
@@ -49,17 +49,16 @@ emotions analysis of the plot. For example,
 }
 ```
 
-
 To run the app locally yourself, create a .env file where you specify `EMOTIONS_HOST`, `IMDB_HOST`, `RAPID_API_KEY`. Visit Rapid API for docs on the APIs and your key. 
 
 ### Tests
 
-I'm using [https://www.npmjs.com/package/supertest](supertest) to make test requests to the API.
+I'm using [supertest](https://www.npmjs.com/package/supertest) to make test requests to the API.
 If you are running the app locally and would like to run the API tests, make sure Mocha is installed,
-and run ~npm test~.
+and run `npm test`.
 
 ### Rate Limiting
-The [https://www.npmjs.com/package/bottleneck](bottleneck) library is used to limit the rate of outgoing requests to the vendor APIs.
+The [bottleneck](https://www.npmjs.com/package/bottleneck) library is used to limit the rate of outgoing requests to the vendor APIs.
 The bottleneck is currently set to limit outgoing requests to a maximum of 1 concurrent request and
-a maximum of 1 outgoing request per second. Requests will remain queued in app until the bottleneck is clear.
+a maximum of 1 outgoing request per second.
 
