@@ -1,6 +1,6 @@
-* Data processing pipeline
+# Data processing pipeline
 
-** Problem
+## Problem
 
 Pick two APIs from https://rapidapi.com/, one that produces text
 content and the other one that consumes it. One example is, Reddit API
@@ -16,16 +16,16 @@ Design the following:
   two APIs.
 
 
-** Solution
+## Solution
 
 I have provided a solution that stiches together two APIs-
-1. [[https://rapidapi.com/imdb/api/movie-database-imdb-alternative][Movie Database (IMDB Alternative)]]
-2. [[https://rapidapi.com/twinword/api/emotion-analysis][Emotion Analysis]]
+1. [https://rapidapi.com/imdb/api/movie-database-imdb-alternative](Movie Database API)
+2. [https://rapidapi.com/twinword/api/emotion-analysis](Emotion Analysis API)
 
-To run locally, clone this repository, and run ~npm install~, then ~node server.js~ to start the server.
+To run locally, clone this repository, and run `npm install`, then `node server.js` to start the server.
 
-Test the API by making a ~GET~ request to
-~http://localhost:3000/films?title={title}~, for example, ~http://localhost:3000/films?title=gremlins~.
+Test the API by making a GET request to
+http://localhost:3000/films?title={title}, for example, http://localhost:3000/films?title=gremlins
 
 A response to a valid request will provide basic information on the movie, including its plot, and an
 emotions analysis of the plot. For example,
@@ -50,16 +50,16 @@ emotions analysis of the plot. For example,
 #+END_EXAMPLE
 
 
-To run the app locally yourself, create a ~.env~ file where you specify `EMOTIONS_HOST`, `IMDB_HOST`, `RAPID_API_KEY`. Visit Rapid API for docs on the APIs and your key. 
+To run the app locally yourself, create a .env file where you specify `EMOTIONS_HOST`, `IMDB_HOST`, `RAPID_API_KEY`. Visit Rapid API for docs on the APIs and your key. 
 
-*** Tests
+### Tests
 
-I'm using [[https://www.npmjs.com/package/supertest][supertest]] to make test requests to the API.
+I'm using [https://www.npmjs.com/package/supertest](supertest) to make test requests to the API.
 If you are running the app locally and would like to run the API tests, make sure Mocha is installed,
 and run ~npm test~.
 
-*** Rate Limiting
-The [[https://www.npmjs.com/package/bottleneck][bottleneck]] library is used to limit the rate of outgoing requests to the vendor APIs.
+### Rate Limiting
+The [https://www.npmjs.com/package/bottleneck](bottleneck) library is used to limit the rate of outgoing requests to the vendor APIs.
 The bottleneck is currently set to limit outgoing requests to a maximum of 1 concurrent request and
 a maximum of 1 outgoing request per second. Requests will remain queued in app until the bottleneck is clear.
 
